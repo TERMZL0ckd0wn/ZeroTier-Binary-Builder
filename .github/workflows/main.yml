@@ -1,0 +1,80 @@
+name: Multi-arch Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (for ARM)
+        if: matrix.arch == 'aarch64'
+        uses: docker/setup-qemu-action@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl build-essential pkg-config libssl-dev
+
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_ENV
+
+      - name: Set environment variables
+        run: |
+          echo "ZT_VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+          echo "ARCH=${{ matrix.arch }}" >> $GITHUB_ENV
+
+      - name: Download and extract ZeroTier
+        run: |
+          wget https://github.com/zerotier/ZeroTierOne/archive/refs/tags/$ZT_VERSION.tar.gz
+          tar zxf $ZT_VERSION.tar.gz
+          mv ZeroTierOne-* ZeroTierOne
+
+      - name: Build ZeroTier
+        working-directory: ./ZeroTierOne
+        run: |
+          make -j$(nproc) ZT_STATIC=1
+          strip zerotier-one
+
+      - name: Package artifacts
+        run: |
+          cd ZeroTierOne
+          tar -czvf ../zerotier_${ARCH}_${ZT_VERSION}.tar.gz zerotier-one zerotier-cli
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: zerotier_${{ matrix.arch }}_${{ env.ZT_VERSION }}
+          path: zerotier_${{ matrix.arch }}_${{ env.ZT_VERSION }}.tar.gz
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "ZeroTier ${{ github.ref_name }}"
+          body: | 
+            Multi-architecture release includes:
+            - x86_64 (Intel/AMD)
+            - aarch64 (ARM64)
+          files: |
+            artifacts/**/zerotier_x86_64_*.tar.gz
+            artifacts/**/zerotier_aarch64_*.tar.gz
