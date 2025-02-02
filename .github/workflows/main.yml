@@ -52,7 +52,7 @@ jobs:
           tar -czvf ../zerotier_${ARCH}_${ZT_VERSION}.tar.gz zerotier-one zerotier-cli
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zerotier_${{ matrix.arch }}_${{ env.ZT_VERSION }}
           path: zerotier_${{ matrix.arch }}_${{ env.ZT_VERSION }}.tar.gz
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
 
