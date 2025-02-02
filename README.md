@@ -1,6 +1,6 @@
 # ZeroTier Binary Builder
 Automatically build static ZeroTier binaries from source.
 
-##### Supported binaries
+#### Supported Architectures
 - x86_64
 - arm64
