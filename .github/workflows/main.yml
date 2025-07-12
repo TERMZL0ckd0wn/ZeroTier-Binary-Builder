@@ -1,4 +1,5 @@
-name: Generate x86_64 & arm64/aarch64 binaries
+name: main
+
 on:
   workflow_dispatch:
   push:
