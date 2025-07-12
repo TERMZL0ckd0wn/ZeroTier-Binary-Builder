@@ -1,0 +1,31 @@
+name: Generate x86_64 & arm64/aarch64 binaries
+
+on:
+  workflow_dispatch:
+  push:
+    # Publish `1.2.3` tags as releases.
+    tags:
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ {platform: 'linux/amd64', name: 'x86_64'}, {platform: 'linux/arm64', name: 'aarch64'}]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Build ${{ matrix.arch.platform }}
+      run: make PLATFORM=${{ matrix.arch.platform }} one
+
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        artifacts: ./out/zerotier-one-${{ matrix.arch.name }}.tar.gz
