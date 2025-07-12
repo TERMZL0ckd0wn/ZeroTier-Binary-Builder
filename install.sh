@@ -2,7 +2,7 @@
 
 echo "Downloading zerotier one binary..."
 mkdir -p /bin/zerotier-one && cd /bin/zerotier-one
-curl -LJ https://github.com/TERMZL0ckd0wn/ZeroTierOne-Void-Linux/releases/latest/download/zerotier-one-x86_64.tar.gz \
+curl -LJ https://github.com/rafalb8/ZeroTierOne-Static/releases/latest/download/zerotier-one-x86_64.tar.gz \
     | tar --strip-components=1 -xzf -
 
 echo "Configuring zerotier one..."
