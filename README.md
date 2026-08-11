@@ -4,11 +4,11 @@ This project is for installing ZeroTierOne on Void Linux or simillar Linux distr
 ### Installing
 Quick Install :
 ```terminal
-curl https://raw.githubusercontent.com/TERMZL0ckd0wn/ZeroTierOne-Void-Linux/refs/heads/install.sh | sudo sh
+curl https://raw.githubusercontent.com/MxrkUnderflow/ZeroTierOne-Void-Linux/refs/heads/install.sh | sudo sh
 ```
 
 ### Issues
-Report any issues [here](https://github.com/TERMZL0ckd0wn/ZeroTier-Binary-Builder/issues). Make sure to state your cerrent Void Linux version and libc implementation along with your machine specs.
+Report any issues [here](https://github.com/rafalb8/ZeroTierOne-Static/issues). Make sure to state your recent Void Linux version and libc implementation along with your machine specs.
 
 ### Special Thanks
 To [this repository](https://github.com/rafalb8/ZeroTierOne-Static) for providing static binaries.
